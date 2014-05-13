@@ -4,30 +4,29 @@
 
 
 ##### LOAD PACKAGES, INSTALL GPIPER, SOURCE SOME FILES  ####
-require(plyr)
-require(lubridate)
-require(maps)
-require(mapdata)
-require(devtools)
-
+stopifnot(
+  library(plyr, logical.return = TRUE),
+  library(lubridate, logical.return = TRUE),
+  library(maps, logical.return = TRUE),
+  library(mapdata, logical.return = TRUE),
+  library(devtools, logical.return = TRUE)
+)
 
 # get and install gpiper from github.  I put in a reference for it in case 
 # we change gpiper in ways that break things here.
-install_github(repo = "gpiper", username="eriqande", ref="7098577b96f9111820902f6fce99f16390d633c1")
-library(gpiper)
+if("gpiper" %in% rownames(installed.packages()) == FALSE) {
+  install_github(repo = "gpiper", username="eriqande", ref="36be155a125b7cf1975a6e5c1f30bd05fb312fd7")
+}
+stopifnot(library(gpiper, logical.return = TRUE))
 
 # source some files with functions and other variables
 source("./R/wiwa_extra_funcs.R")  # for my floating pies
 source("./R/wiwa_colors.R")
 
-
-
 ##### PREPARE THE WORK AREA.  BASICALLY CREATE AN OUTPUT DIRECTORY  ####
 # note that this directory will not be under version control and will be ignored
 # by git.
 dir.create("outputs", showWarnings = F)
-
-
 
 ##### READ IN ALL THE DATA AND REMOVE SOME INCOMPLETE CASES AND DUPLICATED NAMES  ####
 # this is the "WIWA-All columns"
@@ -58,8 +57,6 @@ WA <- WA[,-1]
 # we add a column on the end that is the letters of their names:
 WA$Pop <- gsub("[0-9]*", "", rownames(WA) )
 
-
-
 #### NOW DEFINE THE COLUMNS THAT HAVE THE LOCI AND DISCARD ONES WITH TOO MUCH MISSING DATA  ####
 loc.idx <- 1:192  # these are just the indices of the loci in the data frame
 
@@ -77,10 +74,7 @@ WA$Was.Included <- ifelse(too_much_missing_logical, "No", "Yes")
 # now write that out for Kristen
 write.table(cbind(ShortName=rownames(WA), Was.Included=WA$Was.Included), file="outputs/WIWA_WhichWasUsed.txt", quote=F, row.names=F, sep="\t")
 
-
-
-##### SET UP THE ORDER OF POPULATIONS AND "REPORTING UNITS" THEN
-##### SPLIT INTO BREEDING AND NON-BREEDING AND FIND LAT-LONGS CENTROIDS OF GROUPS ####
+##### SET ORDER OF POPS, SPLIT INTO BREEDING AND NON-BREEDING, AND FIND LAT-LONG CENTROIDS OF GROUPS ####
 # here are the breeding "Pops" in the order that Kristen wants them in.
 # and we also define some reporting units here
 breed.ord <- c("wAKDE", "wAKYA", "wAKUG", "wAKJU", "wABCA", "wBCMH", "wWADA", 
@@ -124,8 +118,6 @@ names(Pop.Centers)[3:4] <- c("lon", "lat")
 # and then get all the non-breeders too:
 WA.WM <- WA.MD[ !(WA.MD$Pop %in% breed.ord), ]   # WA.WM ==> Wiwa-All.Wintering-Migrants
 
-
-
 #### SELF-ASSIGNMENT TESTS WITH GSI_SIM  #####
 
 # make the gsi_sim baseline file:
@@ -140,8 +132,6 @@ SA.to.Rep <- gsi_aggScoresByRepUnit(SA.df, breed.ord, rep.units)
 SA.to.Rep <- cbind(SA.to.Rep, gsi_simMaxColumnAndPost(SA.to.Rep, 3:ncol(SA.to.Rep)) )
 SA.rep.cuts <- gsi_simAssTableVariousCutoffs(SA.to.Rep$PopulationOfOrigin, SA.to.Rep$MaxColumn, SA.to.Rep$MaxPosterior)
 # I sent the above as text to Kristen.
-
-
 
 #### NOW ASSIGN INDIVIDUALS FROM THE WINTERING AND MIGRATORY SAMPLES VIA GSI_SIM  ####
 
@@ -172,22 +162,19 @@ WM.gr$MaxRepu <- factor(levels(rep.units)[max.col(WM.gr[,levels(rep.units)])], l
 # and add the max posterior as well:
 WM.gr$PostMax <- apply(WM.gr[,levels(rep.units)], 1, max)
 
-
-#### PROCEED #####
-
-
+#### PLOT THE DISTRIBUTION OF POSTERIOR PROBS FOR THE ASSIGNMENTS ####
 # check out the distribution of posterior prabilities to different groups
 par(mar=c(5, 4, 4, 2)+c(9,.1,.1,.1))
 plot(WM.gr$MaxRepu, WM.gr$PostMax, las=2)
 
-
+#### SPLIT RESULTS INTO WW (WINTERING BIRDS) AND MM (MIGRATING BIRDS) #####
 # OK, this is cool. Now we want to break these into wintering and migrating:
 # The migrants either are from Pop=="WIWA" or have Pop starting with "m"
 migrant.idx <- WM.gr$Pop=="WIWA" | grepl("^m", WM.gr$Pop)
 WW <- WM.gr[ !migrant.idx, ]  ## WW =  Wintering Wintering!!
 MM <- WM.gr[  migrant.idx, ]  ## MM = Migrating Migrating !!
 
-
+#### ANALYZE THE WINTERING BIRDS GSI RESULTS (WW) ####
 # here are some fixes that I have to make.  Perhaps Kristen can update the data base.
 # one of the baja birds does not have an entry for "Area_General"
 WW$Area_General[WW$Latitude==22.883 & is.na(WW$Area_General)] <- "San Jose del Cabo"
@@ -197,12 +184,11 @@ WW$Area_General[WW$Latitude==22.883 & is.na(WW$Area_General)] <- "San Jose del C
 count(WW, c("Pop", "Latitude", "Longitude", "Area_General", "Area_Specific", "State_Province", "Country"))
 
 
-
 # OK, now we need to aggregate some of the wintering birds into groups tied to a cluster
 # of nearby lat-longs, which is obvious from the above.  Here is what we do:
 # 1. write out a table of all the unique lat-long and locations
 write.table(count(WW, c("Pop", "Latitude", "Longitude", "Area_General", "Area_Specific", "State_Province", "Country")), 
-	quote=F, sep="\t", file="winter_locations.txt")
+            quote=F, sep="\t", file="outputs/winter_locations.txt")
 # 2. Then eric and kristen by hand lumped those unique combinations into different groups. That
 # file is read back here
 winter.lumps <- read.csv("./data/eric_lumps_winter_locations.csv", stringsAsFactors=F)
@@ -215,15 +201,17 @@ WW$GeoGroup <- wilmps[WW$Area_General]
 # now, let us write those counts out for the table.  # this really needs to be more automated in the
 # future!!  I should see what Kristen wants and then generate it in R.
 LumpCounts <- do.call(rbind, lapply(split(WW, WW$GeoGroup), function(x) table(x$MaxRepu)))
-# and we also want the assignments to every specific lat-long.  There must be a better way to do this:
+write.csv(LumpCounts, file="outputs/LumpCounts.csv")
+
+# and we also might want the assignments to every specific lat-long.  There must be a better way to do this:
 ugly <- split(WW, paste(WW$Latitude, WW$Longitude, sep="---"))
 LatLongCounts <- do.call(rbind, lapply(ugly[sapply(ugly, nrow)>0], function(x) table(x$MaxRepu)))
-write.csv(LumpCounts, file="LumpCounts.csv")
 
-
-
-# now, we are going to represent each bird as a dot of a certain color in a grid like so:
+#### PLOT THE WINTERING BIRDS RESULTS IN VARIOUS FORMATS  ####
 WW.ass.list <- lapply(split(WW$MaxRepu, WW$GeoGroup), sort)  # assignments of birds in each GeoGroup, sorted by reporting unit
+
+# Here, we are going to represent each bird as a dot of a certain color in a grid like so:
+# We actually ended up not using it...
 dot.squares <- function(x=WW.ass.list)  {
 	w <- sapply(x, function(z) ceiling(sqrt(length(z))))  # how wide each square will be (in number of dots)
 	
@@ -250,7 +238,10 @@ dot.squares <- function(x=WW.ass.list)  {
 dot.squares()
 
 
-###################### HERE WE MAKE SOME PIES:
+# Here we make pie charts that Kristen ended up putting onto the map in photoshop
+# or illustrator.  It allowed us to have them vectorized while sitting atop a 
+# raster-based map.  To get them right, you would have to open up a graphics window
+# to the desired size.  
 WW.ass.tab <- lapply(WW.ass.list, table)
 par(mar=c(0,0,0,0))
 # make a blank space
@@ -264,13 +255,9 @@ lapply(names(WW.ass.tab), function(z) {
 	text(xx-.2, 0, label=sum(x), adj=1, cex=.8)
 	}
 )
-dev.copy2pdf(file="wintering-pies-with-sample-sizes.pdf")
+dev.copy2pdf(file="outputs/wintering-pies-with-sample-sizes.pdf")
 
-############################################################################################################
-
-
-
-################ DOING THE MIGRANT BIRDS  #####################
+#### NOW, ANALYZE THE MIGRANT BIRDS RESULTS  ####
 # now, we analyze the migrants:
 MM$date <- dmy(MM$Collection_Date)
 MM$Year <- year(MM$date)
@@ -280,16 +267,16 @@ wk.tab <- table(MM$MaxRepu, week(MM$date), year(MM$date), MM$Area_Specific)
 
 # make a summary table for kristen:
 write.table(count(MM, c("Pop", "Latitude", "Longitude", "Area_General", "Area_Specific", "State_Province", "Country")),
-	quote=F, sep="\t", file="migrant_locations.txt")
+	quote=F, sep="\t", file="outputs/migrant_locations.txt")
 
 write.table(count(MM, c("Pop", "Latitude", "Longitude", "Area_General", "Area_Specific", "State_Province", "Country", "Year")),
-	quote=F, sep="\t", file="migrant_locations_by_year_too.txt")
+	quote=F, sep="\t", file="outputs/migrant_locations_by_year_too.txt")
 
 
 # count up number of birds going through each Area_Specific across all weeks and years:
 AreaByRepuTab <- table(MM$Area_Specific, MM$MaxRepu)
 AreaByRepuTabProportions <- apply(AreaByRepuTab, 1, function(x) x/sum(x))
-dev.copy2pdf(file="area-specific-naked-arrows.pdf")
+dev.copy2pdf(file="outputs/area-specific-naked-arrows.pdf")
 
 
 # now, we want to put the Cibola birds in there in separate years (2008 and 2009)
@@ -312,10 +299,12 @@ WeekTabs <- lapply(MMSplit, function(x) {
 	}
 )
 
-
+####  A PLOT WE DON'T USE (OR MAKE HERE) ####
+# here was some code that made a stacked area plot they we ended up not using,
+# but we leave it here anyway.
 if(FALSE) {
 		################# working up a stacked area thing here:
-		require(ggplot2)
+		library(ggplot2)
 		Cib <- MMSplit$Cibola.2009
 		Cib$Week <- week(Cib$date)
 		Cib$MaxRepu <- factor(Cib$MaxRepu, levels=levels(MM$MaxRepu)[c(4,3,2,1)]) # drop missing levels and order by rarity
@@ -346,8 +335,7 @@ if(FALSE) {
 		p
 }
 
-
-
+#### PLOT THE MIGRANT BIRD RESULTS ####
 # now plot those
 # make a separate plot for each location:
 
@@ -370,7 +358,7 @@ lapply(names(WeekTabsLight), function(x) {
 mtext("Week of the year", side=1, line=2.7, outer=T)
 mtext("Birds encountered per week", side=2, line=4, las=0, adj=-2)
 
-dev.copy2pdf(file="week-tables-six-spots.pdf")
+dev.copy2pdf(file="outputs/week-tables-six-spots.pdf")
 
 
 # OK, NOW KRISTEN WANTS A FIGURE WHERE (a) is two panels (Cibola 2008 and then 2009) and
@@ -389,7 +377,7 @@ week.cent.str <- paste(month(week.centers, label=T, abbr=T), mday(week.centers),
 axis(side=1, at=2+seq(1, length.out=11, by=4), tick=F, labels=week.cent.str)
 mtext(text="Date of Week Midpoint", side=1, line=2.6, cex=1.3)
 mtext(text="Number of Birds", side=2, cex=1.3, las=3, adj=.45, line=.3, outer=T)
-dev.copy2pdf(file="cibola-bar-plot.pdf")
+dev.copy2pdf(file="outputs/cibola-bar-plot.pdf")
 
 
 
@@ -406,12 +394,13 @@ week.cent.str <- paste(month(week.centers, label=T, abbr=T), mday(week.centers),
 axis(side=1, at=2+seq(1, length.out=ncol(OneTab), by=4), tick=F, labels=week.cent.str, las=3)
 mtext(text="Date of Week Midpoint", side=1, line=4.3, cex=1.3)
 mtext(text="Number of Birds", side=2, cex=1.3, las=3, adj=.38, line=.3, outer=T)
-dev.copy2pdf(file="oneill-bar-plot.pdf")
+dev.copy2pdf(file="outputs/oneill-bar-plot.pdf")
 
 
 
 # migrant pie figure
-quartz(width=9.5, height=4.6)
+# quartz(width=9.5, height=4.6)
+par(mfrow=c(1,1))
 par(mar=c(0,0,0,0))
 yspot <- .57
 radi <- .4
@@ -443,32 +432,37 @@ week.centers <- mdy("1-1-2009") + weeks(11:21) + days(3)
 week.cent.str <- paste(month(week.centers, label=T, abbr=T), mday(week.centers), sep="-")
 text(x=as.numeric(colnames(WeekTabs$Cibola.2008))-10, y=-yspot-2*yspot-radi*1.73, labels=week.cent.str, pos=1, cex=1.1) 
 
-dev.copy2pdf(file="migrant-two-year-and-onfb-pies.pdf")
+dev.copy2pdf(file="outputs/migrant-two-year-and-onfb-pies.pdf")
 
-
+#### MAKE A TABLE OF MIGRANTS IN ARIZONA  ####
 # now we are going to put the same information in a big ol' table:
-az.tab <- rbind(cbind(year=2008, t(wk.tab[,,"2008"])), cbind(year=2009, t(wk.tab[,,"2009"])))
+az.tab <- rbind(cbind(year=2008, t(wk.tab[,,"2008", "Cibola"])), cbind(year=2009, t(wk.tab[,,"2009", "Cibola"])))
 az.tab <- cbind(week.num=as.numeric(rownames(az.tab)), az.tab)
 rownames(az.tab)<-NULL
 az.tab <- data.frame(az.tab)
 wc <- mdy(paste("1-1",az.tab$year, sep="-")) + weeks(az.tab$week.num) + days(3)
 az.tab <- cbind(week.centers=paste(month(wc, label=T, abbr=T), mday(wc), sep="-"), az.tab)
-write.table(az.tab, file="arizona-mirants-pie-ingredients.txt", row=F, quote=F, sep="\t")
+write.table(az.tab, file="outputs/arizona-mirants-pie-ingredients.txt", row=F, quote=F, sep="\t")
 
-###### NOW, WE PREPARE A BUNCH OF STUFF FOR THE GENELAND ANALYSIS
+#### PREPARE A BUNCH OF STUFF FOR THE GENELAND ANALYSIS  ####
 # now, let's prep stuff for geneland.
-gl.coord <- WA.B[, c("Long", "Lat")]  # coordinates for geneland
+gl.coord <- WA.B[, c("Longitude", "Latitude")]  # coordinates for geneland
 gl.geno <- WA.B[, loc.idx]  # genetic data for geneland
 gl.geno[gl.geno==0] <- NA 	# then the 0s into bona-fide missing data
 
-# now, to make some birds that are all missing data except one locus to put on the extreme ends of
+
+# here we put two fake birds in the geneland data set at the upper right and 
+# lower left corners of things (so it will infer across the whole range.). We
+# let these birds be missing at all loci except one which is diagnostic for 
+# east vs west, and hence essentially known for those two "fake" birds.
+# To make the birds that are all missing data except one locus to put on the extreme ends of
 # the map, I want to find a locus that is fixed in east v west.  A good locus for that is East_West_01.
 # it is allele 3 in eastern pops and 1 in western pops
 fakies<-data.frame(matrix(NA, nrow=2, ncol=length(loc.idx)))
 names(fakies) <- names(gl.geno)
 rownames(fakies) <- c("wFake", "eFake")
-fakies[1, c("East_West_01", "East_West_01.1")] <- 1
-fakies[2, c("East_West_01", "East_West_01.1")] <- 3
+fakies[1, c("East_West_01.1", "East_West_01.2")] <- 1
+fakies[2, c("East_West_01.1", "East_West_01.2")] <- 3
 
 gl.geno <- rbind(gl.geno, fakies)
 
@@ -478,15 +472,17 @@ gl.geno <- rbind(gl.geno, fakies)
 gl.coord["wFake", ] <- c(-170, 72)
 gl.coord["eFake", ] <- c(-50, 47)
 
-
-##### AND THEN LET US PRINT SOME DATA OUT IN PIPELINE FORMAT TO RUN STRUCTURE ON IT
+#### AND THEN LET US PRINT SOME DATA OUT IN PIPELINE FORMAT TO RUN STRUCTURE ON IT ####
 slg <- WA.B[, loc.idx]
-names(slg)<-gsub("\\.1$", "", names(slg))
-write.table(slg, file="wibreed-pipe-genos.txt", quote=F, col.names=NA, sep="\t")
-write(breed.ord, "wibreed-pipe-pops.txt")
-write(names(slg)[c(T,F)], "wibreed-pipe-locs.txt")
+names(slg)<-gsub("\\.[12]$", "", names(slg))
+write.table(slg, file="outputs/wibreed-pipe-genos.txt", quote=F, col.names=NA, sep="\t")
+write(breed.ord, "outputs/wibreed-pipe-pops.txt")
+write(names(slg)[c(T,F)], "outputs/wibreed-pipe-locs.txt")
+
+#### FINALLY, SAVE SOME VARIABLES IN AN RDA FILE FOR LATER USE ####
+save(Pop.Centers, rep.units, WW.assign.df, WA.B, gl.geno, gl.coord, AssLatLong, WM.gr, file="outputs/WIWA-main-carryover-variables.Rda")
 
 
 
 
-save(Pop.Centers, rep.units, WW.assign.df, WA.B, gl.geno, gl.coord, AssLatLong, WM.gr, file="WIWA-main-carryover-variables.Rda")
+

@@ -1,0 +1,31 @@
+Pop,Latitude,Longitude,Area_General,Area_Specific,State_Province,Country,freq,Wintering.Group
+wBZBZ,17.094,-89.069,San Ignacio,"Chaa Creek, San Ignacio",NA,BE,1,Belize
+wCRMV,10.314,-84.825,"Monteverde Cloud Forest, Santa Elena","Monteverde Cloud Forest, Santa Elena",NA,CR,9,Monteverde
+wCRPU,8.754,-82.926,Puntarenaus,"San Vito, Puntarenaus",Puntarenaus,CR,2,Puntarenaus
+wCRPU,8.766,-82.943,Puntarenaus,"San Vito, Puntarenaus",Puntarenaus,CR,2,Puntarenaus
+wCRPU,8.784,-82.975,Puntarenaus,"San Vito, Puntarenaus",Puntarenaus,CR,3,Puntarenaus
+wCRPU,8.784,-82.939,Puntarenaus,"San Vito, Puntarenaus",Puntarenaus,CR,2,Puntarenaus
+wCRPU,8.809,-82.924,Puntarenaus,"San Vito, Puntarenaus",Puntarenaus,CR,1,Puntarenaus
+wCRPU,8.822,-82.972,Puntarenaus,"San Vito, Puntarenaus",Puntarenaus,CR,12,Puntarenaus
+wHNHN,14.1,-87.217,"La Tigra National Park, Tegucigalpa ","La Tigra National Park, Tegucigalpa ",NA,HN,15,Tegucigalpa
+wHNHN,14.331,-87.399,"Cantoral, Tegucigalapa","Cantoral, Tegucigalapa",NA,HN,11,Tegucigalpa
+wMXMX,16.75,-93.117,"Rabasa, El Ocote, Chiapas","Rabasa, El Ocote, Chiapas",NA,MX,1,Chiapas
+wMXMX,17.1,-96.8,"Aeropuerto, Oaxaca","Aeropuerto, Oaxaca",NA,MX,14,Oaxaca
+wMXMX,18.4,-95.2,"Tuxtlas, VER","Tuxtlas, VER",NA,MX,9,Tuxtlas
+wMXMX,19.233,-103.717,"Nevado de Colima, Colima, Jalisco","Nevado de Colima, Colima, Jalisco",NA,MX,3,Jalisco
+wMXMX,19.313,-99.179,San Angel,"University of Mexico, San Angel, Distrito Federal",Distrito Federal,MX,9,San Angel
+wMXMX,19.45,-96.967,"Coatapec, Veracruz","Coatapec, Veracruz",NA,MX,13,Veracruz
+wMXMX,19.548,-96.921,"Parque Macuiltepec, Xalapa, Veracruz","Parque Macuiltepec, Xalapa, Veracruz",NA,MX,7,Veracruz
+wMXMX,19.767,-104.367,"Las Joyas, Autlan, Jalisco","Las Joyas, Autlan, Jalisco",NA,MX,25,Jalisco
+wMXMX,22.883,-109.9,San Jose del,San Jose del,Baja California,MX,1,Baja
+wMXMX,22.883,-109.9,San Jose del Cabo,"San Jose del Cabo, Baja California Sur",Baja California Sur,MX,6,Baja
+wMXMX,22.883,-109.9,San Jose del Cabo,NA,NA,MX,1,Baja
+wMXMX,23,-99.1,Tamulipas,"El Cielo Biosphere Reserve, Tamulipas",NA,MX,15,El Cielo Biosphere
+wMXMX,23.333,-105.5,Sinaloa,"Chupaderos, Sinaloa",NA,MX,8,Sinaloa
+wNINI,11.832,-86.008,"Volcan Mombacho, Granada","Volcan Mombacho, Granada",NA,NI,2,Honduras
+wNINI,13.229,-86.053,"El Jaguar Cafetal, Jinotega","El Jaguar Cafetal, Jinotega",NA,NI,10,Honduras
+wSVSV,13.7,-89.2,San Salvador Volcano,San Salvador Volcano,NA,SV,12,San Salvador
+wSVSV,13.821,-89.653,"Izalco, Sonsonate","Izalco, Sonsonate",NA,SV,17,San Salvador
+wSVSV,13.85,-89.62,"Los Andes National Park, Santa Ana","Los Andes National Park, Santa Ana",NA,SV,7,San Salvador
+wSVSV,13.943,-89.617,"Las Lajas, Santa Ana","Las Lajas, Santa Ana",NA,SV,7,San Salvador
+wSVSV,14.403,-89.36,"Metapan, Santa Ana","Metapan, Santa Ana",NA,SV,9,San Salvador
