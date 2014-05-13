@@ -1,3 +1,6 @@
 .Rproj.user
 .Rhistory
 .RData
+GSI_SIM_Stderr.txt
+gsi_sim_seeds
+outputs/*

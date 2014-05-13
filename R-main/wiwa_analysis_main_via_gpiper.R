@@ -1,34 +1,55 @@
-# This is the main file that goes through everything from our standardized 
-# data set forward.
-library(plyr)
-library(lubridate)
-library(maps)
-library(mapdata)
-#library(gpiper)
-library(devtools)
-
-setwd("/Users/eriq/Documents/work/assist/kristenruegg/WIWA_popgen/WIWA_popgen_analysis/")
-
-source("./R/wiwa_extra_funcs.R")  # for my floating pies
-
-load_all("/Users/eriq/Documents/git-repos/gpiper")  # this loads the gpiper library (which is still under development)
+# This is the main file that goes through everything from the genotypes input file
+# note that it assumes that the working directory is the one in 
+# which the directories "R", "R-main", and "data" reside.
 
 
+##### LOAD PACKAGES, INSTALL GPIPER, SOURCE SOME FILES  ####
+require(plyr)
+require(lubridate)
+require(maps)
+require(mapdata)
+require(devtools)
+
+
+# get and install gpiper from github.  I put in a reference for it in case 
+# we change gpiper in ways that break things here.
+install_github(repo = "gpiper", username="eriqande", ref="7098577b96f9111820902f6fce99f16390d633c1")
+library(gpiper)
 
 # source some files with functions and other variables
+source("./R/wiwa_extra_funcs.R")  # for my floating pies
 source("./R/wiwa_colors.R")
 
 
+
+##### PREPARE THE WORK AREA.  BASICALLY CREATE AN OUTPUT DIRECTORY  ####
+# note that this directory will not be under version control and will be ignored
+# by git.
+dir.create("outputs", showWarnings = F)
+
+
+
+##### READ IN ALL THE DATA AND REMOVE SOME INCOMPLETE CASES AND DUPLICATED NAMES  ####
 # this is the "WIWA-All columns"
-#WA <- read.csv("./data/WIWA_SNP_and_metadata_Oct.csv", row=1, stringsAsFactors=F)
 # read it like this and then remove the duplicated mMXMX06 because there was a naming glitch on the plate
-WA <- read.csv("./data/WIWA_SNP_Jan2014.mer",  stringsAsFactors=F, na.strings=c(""))
+WA <- read.csv("./data/wiwa-snp-genotypes.csv",  stringsAsFactors=F, na.strings=c(""))
 
-# drop those that don't have lat-longs
-WA <- WA[!(is.na(WA$Latitude) | is.na(WA$Longitude)),]
+# finde those that don't have lat-longs
+no_lat_longs_logical <- (is.na(WA$Latitude) | is.na(WA$Longitude))
+# and print them out here:
+WA$Short_Name[no_lat_longs_logical]
 
-# toss ones with duplicated short names (this seems to be only one...the last one)
-WA <- WA[!duplicated(WA$Short_Name),]
+# finally, drop them from the data set
+WA <- WA[!no_lat_longs_logical, ]
+
+
+# find ones with duplicated short names (this seems to be only one...the last one)
+duplicated_short_names_logical <- duplicated(WA$Short_Name)
+# print them out here
+WA$Short_Name[duplicated_short_names_logical]
+
+# and then drop them
+WA <- WA[!duplicated_short_names_logical, ]
 
 # now I make the short_names the rownames and then I toss the first column which is the sample names
 rownames(WA) <- WA$Short_Name
@@ -37,23 +58,29 @@ WA <- WA[,-1]
 # we add a column on the end that is the letters of their names:
 WA$Pop <- gsub("[0-9]*", "", rownames(WA) )
 
+
+
+#### NOW DEFINE THE COLUMNS THAT HAVE THE LOCI AND DISCARD ONES WITH TOO MUCH MISSING DATA  ####
 loc.idx <- 1:192  # these are just the indices of the loci in the data frame
 
-
 # now, we are going to drop the individuals that have more than 6 missing loci:
-WA.MD <- WA[!(rowSums(WA[,loc.idx]==0)/2)>6, ]  # WA.MD ==> Wiwa All Missers Dropped
+too_much_missing_logical <- (rowSums(WA[,loc.idx]==0)/2)>6
+WA.MD <- WA[!too_much_missing_logical, ]  # WA.MD ==> Wiwa All Missers Dropped
 
 # let us make a note of those individuals that got tossed (had more than 6 missing loci)
-TheseGotDropped <- WA[(rowSums(WA[,loc.idx]==0)/2)>6, ] 
+TheseGotDropped <- WA[too_much_missing_logical, ] 
 
 # actually we are going to add a column in WA called Was.Included
 # and put Yes if it was included and No otherwise
-WA$Was.Included <- ifelse( (rowSums(WA[,loc.idx]==0)/2)>6, "No", "Yes")
+WA$Was.Included <- ifelse(too_much_missing_logical, "No", "Yes")
 
 # now write that out for Kristen
-write.table(cbind(ShortName=rownames(WA), Was.Included=WA$Was.Included), file="WIWA_WhichWasUsed.txt", quote=F, row.names=F, sep="\t")
+write.table(cbind(ShortName=rownames(WA), Was.Included=WA$Was.Included), file="outputs/WIWA_WhichWasUsed.txt", quote=F, row.names=F, sep="\t")
 
 
+
+##### SET UP THE ORDER OF POPULATIONS AND "REPORTING UNITS" THEN
+##### SPLIT INTO BREEDING AND NON-BREEDING AND FIND LAT-LONGS CENTROIDS OF GROUPS ####
 # here are the breeding "Pops" in the order that Kristen wants them in.
 # and we also define some reporting units here
 breed.ord <- c("wAKDE", "wAKYA", "wAKUG", "wAKJU", "wABCA", "wBCMH", "wWADA", 
@@ -83,7 +110,7 @@ WA.B <- WA.B[order(WA.B$Pop),]  # order them by factor
 # now print out a table with the number of breeders by unique lat/long
 write.table(
 	count(WA.B, c("Pop", "Latitude", "Longitude", "Area_General", "Area_Specific", "State_Province", "Country")), 
-	file="breeding-location-counts.txt", 
+	file="outputs/breeding-location-counts.txt", 
 	row=F, quote=F, sep="\t"
 )
 
@@ -99,38 +126,46 @@ WA.WM <- WA.MD[ !(WA.MD$Pop %in% breed.ord), ]   # WA.WM ==> Wiwa-All.Wintering-
 
 
 
+#### SELF-ASSIGNMENT TESTS WITH GSI_SIM  #####
 
-# make the gsi_sim files:
-gPdf2gsi.sim(WA.B[,loc.idx], WA.B$Pop, "baseline.txt")
-gPdf2gsi.sim(WA.WM[,loc.idx], outfile="mixture.txt")
-
-
-
-# now, write out a reporting units file too!
-gsi_WriteReportingUnitsFile(breed.ord, rep.units, "repunits.txt")
+# make the gsi_sim baseline file:
+gPdf2gsi.sim(WA.B[,loc.idx], WA.B$Pop, "outputs/baseline.txt")
 
 
-#### SELF-ASSIGNMENT tests with GSI_SIM
 # do a self-assignment gsi_sim run with just the baseline, and after that read the text file
 # output back into a data frame and manipulate it
-gsi_Run_gsi_sim(arg.string=c("-b", "baseline.txt", "--self-assign"), stdout.to = "self-ass-output.txt")
-SA.df <- gsi.simSelfAss2DF("self-ass-output.txt")$Post
+gsi_Run_gsi_sim(arg.string=c("-b", "outputs/baseline.txt", "--self-assign"), stdout.to = "outputs/self-ass-output.txt")
+SA.df <- gsi.simSelfAss2DF("outputs/self-ass-output.txt")$Post
 SA.to.Rep <- gsi_aggScoresByRepUnit(SA.df, breed.ord, rep.units)
 SA.to.Rep <- cbind(SA.to.Rep, gsi_simMaxColumnAndPost(SA.to.Rep, 3:ncol(SA.to.Rep)) )
 SA.rep.cuts <- gsi_simAssTableVariousCutoffs(SA.to.Rep$PopulationOfOrigin, SA.to.Rep$MaxColumn, SA.to.Rep$MaxPosterior)
 # I sent the above as text to Kristen.
 
+
+
+#### NOW ASSIGN INDIVIDUALS FROM THE WINTERING AND MIGRATORY SAMPLES VIA GSI_SIM  ####
+
+# make the gsi-sim mixture and reporting units files
+gPdf2gsi.sim(WA.WM[,loc.idx], outfile="outputs/mixture.txt")
+gsi_WriteReportingUnitsFile(breed.ord, rep.units, "outputs/repunits.txt")
+
+# change into the outputs directory so we don't bomb the cwd with all the gsi_sim output:
+basedir <- getwd()
+setwd("outputs")
+
 # now run gsi-sim. Note that I could add more reps for the z-scores. I just want this to be fast right now
 system(paste(gsi_simBinaryPath(), " -b baseline.txt -t mixture.txt -r repunits.txt --mix-logl-sims 10 0"), ignore.stdout=T)
 
+# then change back to the old working directory (get out out outputs)
+setwd(basedir)
 
-# now we capture all the migrant gsi-sim results in a single data frame (dropping the genetic data for simplicity)
-WM.gr <- cbind(WA.WM[, -loc.idx], read.table("rep_unit_pofz_full_em_mle.txt", header=T), read.table("em_mixture_logl_summary.txt", header=T))
+# now we capture all the wintering and migrant gsi-sim results in a single data frame (dropping the genetic data for simplicity)
+WM.gr <- cbind(WA.WM[, -loc.idx], read.table("outputs/rep_unit_pofz_full_em_mle.txt", header=T), read.table("outputs/em_mixture_logl_summary.txt", header=T))
 WM.gr$AssignedTo <- factor(WM.gr$AssignedTo, levels=breed.ord)  # put these factors in the right order
 
 
 # and I give that data frame to kristen so she can peruse it.
-write.table(WM.gr, "GsiResults1.txt", quote=F, sep="\t", row.names=T, col.names=NA)
+write.table(WM.gr, "outputs/GsiResults1.txt", quote=F, sep="\t", row.names=T, col.names=NA)
 
 # now, find the highest posterior max repu in each case:
 WM.gr$MaxRepu <- factor(levels(rep.units)[max.col(WM.gr[,levels(rep.units)])], levels=levels(rep.units))
@@ -138,6 +173,7 @@ WM.gr$MaxRepu <- factor(levels(rep.units)[max.col(WM.gr[,levels(rep.units)])], l
 WM.gr$PostMax <- apply(WM.gr[,levels(rep.units)], 1, max)
 
 
+#### PROCEED #####
 
 
 # check out the distribution of posterior prabilities to different groups
@@ -279,7 +315,7 @@ WeekTabs <- lapply(MMSplit, function(x) {
 
 if(FALSE) {
 		################# working up a stacked area thing here:
-		library(ggplot2)
+		require(ggplot2)
 		Cib <- MMSplit$Cibola.2009
 		Cib$Week <- week(Cib$date)
 		Cib$MaxRepu <- factor(Cib$MaxRepu, levels=levels(MM$MaxRepu)[c(4,3,2,1)]) # drop missing levels and order by rarity
