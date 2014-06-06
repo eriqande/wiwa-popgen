@@ -480,7 +480,7 @@ write(breed.ord, "outputs/wibreed-pipe-pops.txt")
 write(names(slg)[c(T,F)], "outputs/wibreed-pipe-locs.txt")
 
 #### FINALLY, SAVE SOME VARIABLES IN AN RDA FILE FOR LATER USE ####
-save(Pop.Centers, rep.units, WW.assign.df, WA.B, gl.geno, gl.coord, AssLatLong, WM.gr, file="outputs/WIWA-main-carryover-variables.Rda")
+save(Pop.Centers, rep.units, WA.B, gl.geno, gl.coord, AssLatLong, WM.gr, file="outputs/WIWA-main-carryover-variables.Rda")
 
 
 
