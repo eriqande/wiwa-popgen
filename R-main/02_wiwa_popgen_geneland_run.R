@@ -1,19 +1,21 @@
-# this will usually be run on a big multicore machine.  Just copy the file
-# WIWA-main-carryover-variables.Rda resulting from wiwa_analysis_main.R to the
-# current R directory where you want to run it.  Cool.
-library(multicore)
-library(Geneland)
+# this should be run on a machine with multiple cores to make it go faster
 
+#### Load libraries and get data ####
+stopifnot(
+  library(multicore),
+  library(Geneland)
+)
 
 
 # get the data.  they are in gl.coord and gl.geno after you load the following
-got.these <- load("WIWA-main-carryover-variables.Rda")
+got.these <- load("outputs/WIWA-main-carryover-variables.Rda")
 
 if(!all(c("gl.geno", "gl.coord") %in% got.these)) {
 	stop("Failed to successfully load variables gl.geno and/or gl.coord from file WIWA-main-carryover-variables.Rda")
 }
 
 
+#### DEFINE A FUNCTION TO DO THE GENELAND RUNS ####
 # this function creates the directory subdir-suffix, changes to and
 # then runs geneland there.  This is a wrapper to let you run it
 # using multicore.  You have to define 
@@ -56,7 +58,7 @@ runGeneLand <- function(subdir="GL-run", suffix="0", geno, coord) {
 
 # and here we spawn ourselves 10 processes running geneland
 mclapply(1:10, function(x) runGeneLand(
-		subdir="GL-run-Oct21-number", 
+		subdir="./outputs/GeneLandRun", 
 		suffix=x, 
 		geno=gl.geno,
 		coord=gl.coord),

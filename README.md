@@ -22,7 +22,7 @@ still reproduces all of our results.
 Make sure that the current working directory is the directory that has the 
 file `wiwa-popgen.Rproj` in it.  Then do this in R:
 ```
-source("R-main/wiwa_analysis_main_via_gpiper.R")
+source("R-main/1_wiwa_analysis_main_via_gpiper.R")
 ```
 That will create a directory called `outputs` and will put a lot of output into it. 
 Some relevant bits of output are:

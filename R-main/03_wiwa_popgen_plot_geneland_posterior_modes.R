@@ -2,39 +2,50 @@
 ## Note that the geneland output is currently on a jump drive.
 
 
-load("outputs/WIWA-main-carryover-variables.Rda")
+
+#### Load packages, get stored data, source necessary R-scripts, define directories ####
+stopifnot(
+  library(Geneland)
+  library(maps)
+)
+load("./outputs/WIWA-main-carryover-variables.Rda")
+
+if(!all(c("gl.geno", "gl.coord") %in% got.these)) {
+  stop("Failed to successfully load variables gl.geno and/or gl.coord from file WIWA-main-carryover-variables.Rda")
+}
+
+source("./R/geneland_helper_funcs.R")
 
 
 #GLOUT<-"/Volumes/ERIC/WIWA_SEP30_Geneland_Runs/GL-Run2--Sept30-version"
 #GLOUT<-"/Users/eriq/Documents/work/assist/kristenruegg/WIWA_popgen/WIWA_popgen_analysis/geneland_outputs/GL-Run-Oct21"
 
-GLOUT<-"/Volumes/eriq/Documents/UnsyncedSimulationOutputs/WIWA-Geneland/GL-Run-Oct21"
+GLOUT<-"./outputs"
 
-OUTP <- "/tmp"
+OUTP <- "./outputs/geneland-posterior-mode-plots"
+dir.create(OUTP)
 
-library(Geneland)
 
-source("./R/geneland_helper_funcs.R")
+
+
 
 x<-1
-post.file <- paste(GLOUT, "/GL-run-sub-",x,"/", "proba.pop.membership.txt", sep="")
+post.file <- paste(GLOUT, "/GeneLandRun-",x,"/", "proba.pop.membership.txt", sep="")
 
 # get the sampling coordinates
-#coord <- read.table("../data/Sept30_version/Latlong.txt")
 coord <- gl.coord
 
 
 # now read in the posteriors and clip it etc:
 pfile <- read.table(post.file, header=T)
 
-# make spatial po
 
 
-library(maps)
+
 catchit <- lapply(3:10, function(x) {
   PostMode2(
     coordinates=coord, 
-    path.mcmc=paste(GLOUT, "/GL-run-sub-",x,"/", sep=""), 
+    path.mcmc=paste(GLOUT, "/GeneLandRun-",x,"/", sep=""), 
     file=paste(OUTP, "PostModeMap-", x, ".pdf", sep=""),
     dot.cex=.8
   )
