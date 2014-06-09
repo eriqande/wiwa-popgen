@@ -26,9 +26,7 @@ OUTP <- "./outputs/geneland-posterior-mode-plots"
 dir.create(OUTP)
 
 
-
-
-
+#### NOT SURE WHY THIS IS HERE. I MIGHT BE ABLE TO TOSS THIS CHUNK ####
 x<-1
 post.file <- paste(GLOUT, "/GeneLandRun-",x,"/", "proba.pop.membership.txt", sep="")
 
@@ -40,8 +38,7 @@ coord <- gl.coord
 pfile <- read.table(post.file, header=T)
 
 
-
-
+#### PRODUCE ALL THE POSTERIOR MODE PLOTS ####
 catchit <- lapply(3:10, function(x) {
   PostMode2(
     coordinates=coord, 
