@@ -5,7 +5,7 @@
 
 #### Load packages, get stored data, source necessary R-scripts, define directories ####
 stopifnot(
-  library(Geneland, logical.return = TRUE)
+  library(Geneland, logical.return = TRUE),
   library(maps, logical.return = TRUE)
 )
 load("./outputs/WIWA-main-carryover-variables.Rda")

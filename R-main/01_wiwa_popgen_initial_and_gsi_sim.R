@@ -303,42 +303,6 @@ WeekTabs <- lapply(MMSplit, function(x) {
 	}
 )
 
-####  A PLOT WE DON'T USE (OR MAKE HERE) ####
-# here was some code that made a stacked area plot they we ended up not using,
-# but we leave it here anyway.
-if(FALSE) {
-		################# working up a stacked area thing here:
-		library(ggplot2)
-		Cib <- MMSplit$Cibola.2009
-		Cib$Week <- week(Cib$date)
-		Cib$MaxRepu <- factor(Cib$MaxRepu, levels=levels(MM$MaxRepu)[c(4,3,2,1)]) # drop missing levels and order by rarity
-
-		CibTab.df <- count(Cib, c("MaxRepu", "Week"))
-
-		# now make the plot
-		p <- ggplot(CibTab.df, aes( Week, freq)) + scale_color_manual(values = pie.cols[c(4,3,2,1)]) + scale_fill_manual(values = pie.cols[c(4,3,2,1)])
-		p + geom_area(aes(colour = MaxRepu, fill= MaxRepu), position = 'stack') 
-
-
-		# now try doing both years together as facets and doing it by day of the year.  This is pretty cool.
-		Cib <- MM[MM$Area_Specific=="Cibola",]
-		Cib$Week <- week(Cib$date)
-		Cib$DayOfYear <- yday(Cib$date)
-		Cib$Year <- year(Cib$date)
-		Cib$MaxRepu <- factor(Cib$MaxRepu, levels=levels(MM$MaxRepu)[c(4,3,2,1)]) # drop missing levels and order by rarity
-
-		CibTab.df <- count(Cib, c("MaxRepu", "DayOfYear", "Year"))
-
-		# now make the plot
-		p <- ggplot(CibTab.df, aes( DayOfYear, freq)) + 
-					scale_color_manual(values = pie.cols[c(4,3,2,1)]) + 
-					scale_fill_manual(values = pie.cols[c(4,3,2,1)]) + 
-					geom_area(aes(colour = MaxRepu, fill= MaxRepu), position = 'stack') +
-					facet_grid(Year ~ .)
-
-		p
-}
-
 #### PLOT THE MIGRANT BIRD RESULTS ####
 pdf(width = 8, height = 9, file = "outputs/week-tables-six-spots.pdf")
 # now plot those

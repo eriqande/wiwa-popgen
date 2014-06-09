@@ -6,12 +6,22 @@ REGENERATE_BASE_MAP <- FALSE
 REGENERATE_POLY_RASTS <- FALSE
 
 
-#### LOAD LIBRARIES, GET DATA, SOURCE NECESSARY FILES  ####
+#### LOAD LIBRARIES, DEFINE SMALL HELPER FUNCTIONS, GET DATA, SOURCE NECESSARY FILES  ####
 stopifnot(
-  library(raster, logical.return = TRUE)
-  library(rgdal, logical.return = TRUE)
-  library(geosphere, logical.return = TRUE)
+  library(raster, logical.return = TRUE),
+  library(rgdal, logical.return = TRUE),
+  library(geosphere, logical.return = TRUE),
+  library(RCurl, logical.return = TRUE)
 )
+
+
+# here is a function to download stuff via RCurl
+bdown=function(url, file){
+  f = CFILE(file, mode="wb")
+  a = curlPerform(url = url, writedata = f@ref, noprogress=FALSE)
+  close(f)
+  return(a)
+}
 
 
 # get some of the results from wiwa_analysis_main.R
@@ -87,7 +97,12 @@ if(REGENERATE_BASE_MAP==TRUE) {
 
 
 }  else {
-	b3 <- brick("basemap/b3_cropped.nc")
+  dir.create("mapstuff")  # make a directory to put the stuff
+  
+  message("\n\nStarting download of basemap: b3_cropped.nc\n\n")
+  bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/b3_cropped.nc", 
+        file = "mapstuff/b3_cropped.nc")
+	b3 <- brick("mapstuff/b3_cropped.nc")
 }
 
 
@@ -120,9 +135,19 @@ if(REGENERATE_POLY_RASTS==TRUE) {
 	writeRaster(wiwinter.rast, "shapefiles/wiwinter_rast", "CDF")
 	
 } else {
-	# if not regenerating, then just read them in
-	wibreed.rast <- raster("shapefiles/wibreed_rast.nc")
-	wiwinter.rast <- raster("shapefiles/wiwinter_rast.nc")
+	# if not regenerating, then just download them and read them in
+  dir.create("mapstuff")  # make a directory to put the stuff
+    
+  message("\n\nStarting download of wibreed_rast.nc\n\n")
+  bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/wibreed_rast.nc", 
+                file = "mapstuff/wibreed_rast.nc")
+  
+  message("\n\nStarting download of wiwinter_rast.nc\n\n")
+  bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/wiwinter_rast.nc", 
+        file = "mapstuff/wiwinter_rast.nc")
+  
+	wibreed.rast <- raster("mapstuff/wibreed_rast.nc")
+	wiwinter.rast <- raster("mapstuff/wiwinter_rast.nc")
 }
 
 # get the sampling locations properly projected:
