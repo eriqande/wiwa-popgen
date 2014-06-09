@@ -483,10 +483,6 @@ write(names(slg)[c(T,F)], "outputs/wibreed-pipe-locs.txt")
 save(Pop.Centers, rep.units, WA.B, gl.geno, gl.coord, WM.gr, file="outputs/WIWA-main-carryover-variables.Rda")
 
 
-# note that a previous version saved variables WW.assign.df and AssLatLong
-# but those variables are not currently generated.
-
-
 
 
 

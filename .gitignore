@@ -4,3 +4,6 @@
 GSI_SIM_Stderr.txt
 gsi_sim_seeds
 outputs/*
+README.html
+.DS_Store
+TERMS*.html
