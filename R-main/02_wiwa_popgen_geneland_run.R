@@ -2,8 +2,8 @@
 
 #### Load libraries and get data ####
 stopifnot(
-  library(parallel),
-  library(Geneland)
+  library(parallel, logical.return = TRUE),
+  library(Geneland, logical.return = TRUE)
 )
 
 

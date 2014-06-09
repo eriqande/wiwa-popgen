@@ -8,9 +8,9 @@ REGENERATE_POLY_RASTS <- FALSE
 
 #### LOAD LIBRARIES, GET DATA, SOURCE NECESSARY FILES  ####
 stopifnot(
-  library(raster)
-  library(rgdal)
-  library(geosphere)
+  library(raster, logical.return = TRUE)
+  library(rgdal, logical.return = TRUE)
+  library(geosphere, logical.return = TRUE)
 )
 
 
