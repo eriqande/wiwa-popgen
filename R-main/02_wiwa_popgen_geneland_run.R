@@ -2,7 +2,7 @@
 
 #### Load libraries and get data ####
 stopifnot(
-  library(multicore),
+  library(parallel),
   library(Geneland)
 )
 
