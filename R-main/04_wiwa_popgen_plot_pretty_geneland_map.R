@@ -95,8 +95,8 @@ if(REGENERATE_BASE_MAP==TRUE) {
 # now, another task that takes a long time, so we will not re-do it if not necessary
 if(REGENERATE_POLY_RASTS==TRUE) {
   ## NOTE, IF YOU WANT TO MAKE THESE RASTERS OF THE POLYGONS, YOU WILL NEED TO 
-  ## GET THOSE SHAPEFILES FROM THE BIRD RANGE FOLKS.  SEE THE MANUSCRIPT FOR A 
-  ## CITATION.
+  ## GET THOSE SHAPEFILES FROM THE BIRD RANGE FOLKS.  SEE THE MANUSCRIPT AND TERMS-BLI.md IN
+  ## THE GITHUB REPOSITORY FOR A CITATION.
   
   # here are some maneuvers with the range map shapefiles.
   # Here get the distribution maps as shapefiles.  We read them in as spatialPolygonsDataFrames
