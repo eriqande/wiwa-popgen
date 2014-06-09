@@ -164,8 +164,11 @@ WM.gr$PostMax <- apply(WM.gr[,levels(rep.units)], 1, max)
 
 #### PLOT THE DISTRIBUTION OF POSTERIOR PROBS FOR THE ASSIGNMENTS ####
 # check out the distribution of posterior prabilities to different groups
+pdf(width = 6, height = 6, file = "outputs/posterior_prob_boxplots.pdf")
 par(mar=c(5, 4, 4, 2)+c(9,.1,.1,.1))
 plot(WM.gr$MaxRepu, WM.gr$PostMax, las=2)
+dev.off()
+
 
 #### SPLIT RESULTS INTO WW (WINTERING BIRDS) AND MM (MIGRATING BIRDS) #####
 # OK, this is cool. Now we want to break these into wintering and migrating:
@@ -234,14 +237,15 @@ dot.squares <- function(x=WW.ass.list)  {
 	plot(d$X, d$Y, col=d$Color, pch=19)
 }
 
-
+pdf(width = 9, height = 6, file = "outputs/dot-squares.pdf")
 dot.squares()
-
+dev.off()
 
 # Here we make pie charts that Kristen ended up putting onto the map in photoshop
 # or illustrator.  It allowed us to have them vectorized while sitting atop a 
 # raster-based map.  To get them right, you would have to open up a graphics window
-# to the desired size.  
+# to the desired size. 
+pdf(width = 9, height = 6, file = "outputs/wintering-pies-with-sample-sizes.pdf")
 WW.ass.tab <- lapply(WW.ass.list, table)
 par(mar=c(0,0,0,0))
 # make a blank space
@@ -255,7 +259,7 @@ lapply(names(WW.ass.tab), function(z) {
 	text(xx-.2, 0, label=sum(x), adj=1, cex=.8)
 	}
 )
-dev.copy2pdf(file="outputs/wintering-pies-with-sample-sizes.pdf")
+dev.off()
 
 #### NOW, ANALYZE THE MIGRANT BIRDS RESULTS  ####
 # now, we analyze the migrants:
@@ -276,7 +280,7 @@ write.table(count(MM, c("Pop", "Latitude", "Longitude", "Area_General", "Area_Sp
 # count up number of birds going through each Area_Specific across all weeks and years:
 AreaByRepuTab <- table(MM$Area_Specific, MM$MaxRepu)
 AreaByRepuTabProportions <- apply(AreaByRepuTab, 1, function(x) x/sum(x))
-dev.copy2pdf(file="outputs/area-specific-naked-arrows.pdf")
+#dev.copy2pdf(file="outputs/area-specific-naked-arrows.pdf")
 
 
 # now, we want to put the Cibola birds in there in separate years (2008 and 2009)
@@ -336,6 +340,7 @@ if(FALSE) {
 }
 
 #### PLOT THE MIGRANT BIRD RESULTS ####
+pdf(width = 8, height = 9, file = "outputs/week-tables-six-spots.pdf")
 # now plot those
 # make a separate plot for each location:
 
@@ -357,12 +362,12 @@ lapply(names(WeekTabsLight), function(x) {
 )
 mtext("Week of the year", side=1, line=2.7, outer=T)
 mtext("Birds encountered per week", side=2, line=4, las=0, adj=-2)
-
-dev.copy2pdf(file="outputs/week-tables-six-spots.pdf")
+dev.off()
 
 
 # OK, NOW KRISTEN WANTS A FIGURE WHERE (a) is two panels (Cibola 2008 and then 2009) and
 # (b) is the Oneill Forebay. I will make those separately
+pdf(width = 10, height = 6, file = "outputs/cibola-bar-plot.pdf")
 CB <- WeekTabs[1:2]  # this is the Cib08 and 09
 par(mar=c(.4,1.9,1.4,.1), las=1, mfrow=c(length(CB),1), oma=c(5,4,0,0))
 lapply(names(CB), function(x) {
@@ -377,11 +382,12 @@ week.cent.str <- paste(month(week.centers, label=T, abbr=T), mday(week.centers),
 axis(side=1, at=2+seq(1, length.out=11, by=4), tick=F, labels=week.cent.str)
 mtext(text="Date of Week Midpoint", side=1, line=2.6, cex=1.3)
 mtext(text="Number of Birds", side=2, cex=1.3, las=3, adj=.45, line=.3, outer=T)
-dev.copy2pdf(file="outputs/cibola-bar-plot.pdf")
+dev.off()
 
 
 
 # Now, the Oneill Forebay stuff:
+pdf(width = 8, height = 4, file = "outputs/oneill-bar-plot.pdf")
 Oneill <- MMSplit$"O'neill Forbay Wildlife Area, Merced County, CA"
 OneTab <- table(factor(Oneill$MaxRepu, levels=c("AK.EastBC.AB", "Wa.To.NorCalCoast", "CentCalCoast", "CalSierra")), factor(week(Oneill$date), 13:40))
 par(mar=c(.4,1.9,1.4,.1), las=1, oma	=c(5,3,0,0))
@@ -394,12 +400,13 @@ week.cent.str <- paste(month(week.centers, label=T, abbr=T), mday(week.centers),
 axis(side=1, at=2+seq(1, length.out=ncol(OneTab), by=4), tick=F, labels=week.cent.str, las=3)
 mtext(text="Date of Week Midpoint", side=1, line=4.3, cex=1.3)
 mtext(text="Number of Birds", side=2, cex=1.3, las=3, adj=.38, line=.3, outer=T)
-dev.copy2pdf(file="outputs/oneill-bar-plot.pdf")
+dev.off()
 
 
 
 # migrant pie figure
 # quartz(width=9.5, height=4.6)
+pdf(width = 9.5, height = 4.6, file = "outputs/migrant-two-year-and-onfb-pies.pdf")
 par(mfrow=c(1,1))
 par(mar=c(0,0,0,0))
 yspot <- .57
@@ -431,8 +438,9 @@ text(x=c(1,1)-radi*1.2, y=c(1,-1)*yspot, labels=c("2008", "2009"), pos=2, cex=1.
 week.centers <- mdy("1-1-2009") + weeks(11:21) + days(3)
 week.cent.str <- paste(month(week.centers, label=T, abbr=T), mday(week.centers), sep="-")
 text(x=as.numeric(colnames(WeekTabs$Cibola.2008))-10, y=-yspot-2*yspot-radi*1.73, labels=week.cent.str, pos=1, cex=1.1) 
+dev.off()
 
-dev.copy2pdf(file="outputs/migrant-two-year-and-onfb-pies.pdf")
+
 
 #### MAKE A TABLE OF MIGRANTS IN ARIZONA  ####
 # now we are going to put the same information in a big ol' table:
