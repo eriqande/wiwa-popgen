@@ -10,7 +10,7 @@ stopifnot(
 )
 load("./outputs/WIWA-main-carryover-variables.Rda")
 
-if(!all(c("gl.geno", "gl.coord") %in% got.these)) {
+if(!all(c("gl.geno", "gl.coord") %in% ls())) {
   stop("Failed to successfully load variables gl.geno and/or gl.coord from file WIWA-main-carryover-variables.Rda")
 }
 
