@@ -40,6 +40,7 @@ are not distributed under the public domain license.  Specifically:
 They were generated from shapefiles provided to us by BirdLife International.   (BirdLife International and NatureServe (2012) *Bird species distribution maps of the world*. BirdLife International, Cambridge, UK and NatureServe, Arlington, USA.)  The raster files are provided through download from an external link only for reproduction of the results of the paper we have published on this topic and should not be used for other purposes.  Persons interested in the range map should contact BirdLife International or NatureServe directly.  The full text of the license under which the original shapefiles and meta data were provided to us appears in TERMS-BLI.md.
 
 ## Reproducing our results
+
 ### Initial Maneuvers
 Make sure that the current working directory is the directory that has the 
 file `wiwa-popgen.Rproj` in it.  Then source the R code in the file:
@@ -61,13 +62,16 @@ analyses.
 
 
 ### Geneland analysis
-Next you need to run geneland.  We use `mclapply` from the `parallel` package to run Geneland 10 times.  Do this by 
+Should you choose to do so, you can re-do our Geneland analysis.  We recommend using a fast computer
+with at least 10 cores.  **If you don't want to re-run Geneland, that is OK! We provide relevant output so that you can continue with creating the map from our paper if so desired**
+
+We use `mclapply` from the `parallel` package to run Geneland 10 times.  Do this by 
 sourcing the R code in:
 ```
 R-main/02_wiwa_popgen_geneland_run.R
 ```
-This creates a boatload of output in a series of files beginning with `./outputs/GeneLandRun`.  This step may take a
-good several hours.
+This creates a boatload of output in a series of files with names beginning with `outputs/GeneLandRun`.  This step may take a
+good 12 hours or more.
 
 
 ### Invesigating geneland maximum a posteriori estimates
@@ -75,14 +79,42 @@ Once the previous section has finished.  You can source this file:
 ```
 R-main/03_wiwa_popgen_plot_geneland_posterior_modes.R
 ```
-to make plots of the MAP estimates from Geneland to see that the results are pretty similar across most runs. In
-our experience there were basically two different modes found in the 10 different runs of the program.
+to make plots of the MAP estimates from Geneland to see that the results are pretty similar across most runs. 
+If you didn't re-run Geneland, then you won't be able to create all of these plots.
 
-The output plots are put into:  **NAME_OF_OUTPUT_PLOTS.**
+The output plots are put into the directory `./outputs/geneland-posterior-mode-plots`
+
+In our experience there were basically two different modes found in the 10 different runs of the program:
+one of the modes had 7 clusters and the other had 6.  We have put a representative plot of each of these in 
+the files `PostModeMap-6_clusters.pdf` and   `PostModeMap-7_clusters.pdf` in the directory `example_outputs` 
+
+For our downstream work of making maps and delineating reporting groups we focused on the mode with
+6 clusters, as it seemed to correspond well with the *structure* results and the self-assignment capability
+of our SNP panel.
+
+We include the spatial posterior probabilities of cluster membership from one of the 6-cluster-mode runs in 
+`intermediates/proba.pop.membership.txt`.  This is the output that is used in the next section to make a pretty
+map.  Of course, if you want to make your own map from different results that you have generated from
+Geneland, you will have to replace `intermediates/proba.pop.membership.txt` with your own output.
 
 
 ### Making a pretty map with color transparency according to geneland posterior probabilities
-To reproduce this all from scratch, you will have to download a suitable map from http://www.naturalearthdata.com/downloads/10m-raster-data/10m-cross-blend-hypso/  We used the "Cross Blended Hypso with Shaded Relief, Water, and Drainages".  You will also have to get the shapefiles from Wilson's Warblers from the 
+This is done by sourcing the file:
+```
+R-main/04_wiwa_popgen_plot_pretty_geneland_map.R
+```
+into R. By default, this is run with the variables `REGENERATE_BASE_MAP` and `REGENERATE_POLY_RASTS`
+set to `FALSE`, which means that, instead, the R-code downloads 3 files of about 200 Mb worth of stuff to
+avoid some lengthy computations.  The files it downloads are:  `b3_cropped.nc` (a piece of the Natural Earth
+Data base map), `wibreed_rast.nc` (a rasterized version of the breeding range of Wilson's warbler) and `wiwinter_rast.nc`
+(a rasterized version of the wintering range).  The latter two files were generated from data provided by BirdLifeInternational.
 
-1. Base map from 
+If you set `REGENERATE_BASE_MAP` and `REGENERATE_POLY_RASTS` to `TRUE` then you will have 
+you will have to download a suitable map from http://www.naturalearthdata.com/downloads/10m-raster-data/10m-cross-blend-hypso/
+We used the "Cross Blended Hypso with Shaded Relief, Water, and Drainages".  You will also have to get the shapefiles from Wilson's Warblers directly
+from BirdLifeInternational (see the **Exceptions to Public Domain** section above). And you will have to put them in the correct location, 
+etc.
+
+The main output from this script is:
+
 
