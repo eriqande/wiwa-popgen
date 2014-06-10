@@ -1,4 +1,5 @@
-## Hack their posterior mode function to change the color of the dots:
+## Hack their posterior mode function to change the color of the dots,
+## and also to add a map to it.
 PostMode2 <- function (coordinates, path.mcmc, plotit = TRUE, format = "pdf", 
     new.dev = TRUE, printit = FALSE, file, main.title = "", dot.pch=21, dot.cex=1.6, dot.col="blue") 
 {
@@ -62,6 +63,12 @@ PostMode2 <- function (coordinates, path.mcmc, plotit = TRUE, format = "pdf",
                 2] + delta.coord/2 + frame)), asp = 1)
         points(coordinates,  pch = dot.pch, cex = dot.cex, col=dot.col)
         title(main = main.title, sub = "Estimated cluster membership")
+        
+        # now ECA adds some map stuff in there.
+        library(maps)
+        map("world", add=T)
+        
+        
         dev.off()
     }
 }

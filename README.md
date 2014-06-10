@@ -61,7 +61,7 @@ analyses.
 
 
 ### Geneland analysis
-Next you need to run geneland.  We use `mclapply` from the `multicore` package to run Geneland 10 times.  Do this by 
+Next you need to run geneland.  We use `mclapply` from the `parallel` package to run Geneland 10 times.  Do this by 
 sourcing the R code in:
 ```
 R-main/02_wiwa_popgen_geneland_run.R

@@ -1,5 +1,5 @@
-## This is a collection of code to deal with the geneland output.
-## Note that the geneland output is currently on a jump drive.
+## This is a collection of code to deal with the geneland output,
+## mainly plotting posterior modes of different runs.
 
 
 
@@ -43,10 +43,10 @@ catchit <- lapply(3:10, function(x) {
   PostMode2(
     coordinates=coord, 
     path.mcmc=paste(GLOUT, "/GeneLandRun-",x,"/", sep=""), 
-    file=paste(OUTP, "PostModeMap-", x, ".pdf", sep=""),
-    dot.cex=.8
+    file=paste(OUTP, "/", "PostModeMap-", x, ".pdf", sep=""),
+    dot.cex=.8,
+    plotit = FALSE,
+    printit = TRUE
   )
-  map("world", add=T)
-  dev.copy2pdf(file=paste(OUTP, "PostModeMap-", x, ".pdf", sep="/"))
-}
+  }
 )
