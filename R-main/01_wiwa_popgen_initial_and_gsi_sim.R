@@ -210,6 +210,21 @@ write.csv(LumpCounts, file="outputs/LumpCounts.csv")
 ugly <- split(WW, paste(WW$Latitude, WW$Longitude, sep="---"))
 LatLongCounts <- do.call(rbind, lapply(ugly[sapply(ugly, nrow)>0], function(x) table(x$MaxRepu)))
 
+# and then we create a variable that we will write out for making the pretty map in script 04
+WW.list <- split(WW, WW$GeoGroup)
+tmp <- lapply(WW.list, 
+              function(x) {
+                lat <- mean(x$Latitude)
+                long <- mean(x$Longitude)
+                Locats <- paste(unique(x$Area_General), collapse="/") 
+                tab <- t(data.frame((table(x$MaxRepu)[])))
+                cnt <- nrow(x)
+                cbind(tab, n=cnt, data.frame(lat=lat, long=long, Locats=Locats))
+              }
+)
+WW.assign.df <- do.call(rbind, tmp)
+
+
 #### PLOT THE WINTERING BIRDS RESULTS IN VARIOUS FORMATS  ####
 WW.ass.list <- lapply(split(WW$MaxRepu, WW$GeoGroup), sort)  # assignments of birds in each GeoGroup, sorted by reporting unit
 
@@ -405,7 +420,6 @@ text(x=as.numeric(colnames(WeekTabs$Cibola.2008))-10, y=-yspot-2*yspot-radi*1.73
 dev.off()
 
 
-
 #### MAKE A TABLE OF MIGRANTS IN ARIZONA  ####
 # now we are going to put the same information in a big ol' table:
 az.tab <- rbind(cbind(year=2008, t(wk.tab[,,"2008", "Cibola"])), cbind(year=2009, t(wk.tab[,,"2009", "Cibola"])))
@@ -452,7 +466,7 @@ write(breed.ord, "outputs/wibreed-pipe-pops.txt")
 write(names(slg)[c(T,F)], "outputs/wibreed-pipe-locs.txt")
 
 #### FINALLY, SAVE SOME VARIABLES IN AN RDA FILE FOR LATER USE ####
-save(Pop.Centers, rep.units, WA.B, gl.geno, gl.coord, WM.gr, file="outputs/WIWA-main-carryover-variables.Rda")
+save(Pop.Centers, rep.units, WA.B, gl.geno, gl.coord, WM.gr, WW.assign.df,file="outputs/WIWA-main-carryover-variables.Rda")
 
 
 
