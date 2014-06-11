@@ -108,6 +108,7 @@ if(REGENERATE_BASE_MAP==TRUE) {
   message("\n\nStarting download of basemap: b3_cropped.nc\n\n")
   bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/b3_cropped.nc", 
         file = "mapstuff/b3_cropped.nc")
+  }
 
   b3 <- brick("mapstuff/b3_cropped.nc")
 }
@@ -163,6 +164,7 @@ if(REGENERATE_POLY_RASTS==TRUE) {
     bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/wiwinter_rast.nc", 
         file = "mapstuff/wiwinter_rast.nc")
   }
+  
 	wibreed.rast <- raster("mapstuff/wibreed_rast.nc")
 	wiwinter.rast <- raster("mapstuff/wiwinter_rast.nc")
 }
