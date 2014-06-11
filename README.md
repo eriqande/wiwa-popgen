@@ -12,8 +12,6 @@
         - [Session Info](#session-info)
         - [Running structure and basic population genetic statistics](#running-structure-and-basic-population-genetic-statistics)
             - [Standard popgen statistics](#standard-popgen-statistics)
-- [AB_AK_03](#abak03)
-- [AB_PRBO_31](#abprbo31)
             - [Structure runs](#structure-runs)
     - [How did I get that Table of Contents there?](#how-did-i-get-that-table-of-contents-there)
 
@@ -198,13 +196,8 @@ outputs/wibreed-pipe-pops.txt
 
 #### Standard popgen statistics
 For standard population genetic analyses such as HW tests and tree building, we dropped two loci (AB_AK_03 and AB_PRBO_31) by 
-putting a `#` at the start of their line where they appear in `outputs/wibreed-pipe-pops.txt`, i.e. those loci
-are now on lines that look like:
-```
-# AB_AK_03
-# AB_PRBO_31
-```
-and the settings file that we used for `slg_pipe` can be found at:
+putting a `#` at the start of their line where they appear in `outputs/wibreed-pipe-pops.txt`.
+The settings file that we used for `slg_pipe` can be found at:
 ```
 slg_pipe_settings/wiwa-basic-pop-summary-settings.sh
 ```
