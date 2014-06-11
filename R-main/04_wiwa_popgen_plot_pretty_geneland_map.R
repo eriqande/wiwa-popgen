@@ -11,7 +11,8 @@ stopifnot(
   library(raster, logical.return = TRUE),
   library(rgdal, logical.return = TRUE),
   library(geosphere, logical.return = TRUE),
-  library(RCurl, logical.return = TRUE)
+  library(RCurl, logical.return = TRUE),
+  library(ncdf4, logical.return = TRUE)
 )
 
 
@@ -102,7 +103,8 @@ if(REGENERATE_BASE_MAP==TRUE) {
   message("\n\nStarting download of basemap: b3_cropped.nc\n\n")
   bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/b3_cropped.nc", 
         file = "mapstuff/b3_cropped.nc")
-	b3 <- brick("mapstuff/b3_cropped.nc")
+
+  b3 <- brick("mapstuff/b3_cropped.nc")
 }
 
 
@@ -136,7 +138,7 @@ if(REGENERATE_POLY_RASTS==TRUE) {
 	
 } else {
 	# if not regenerating, then just download them and read them in
-  dir.create("mapstuff")  # make a directory to put the stuff
+  suppressWarnings(dir.create("mapstuff"))  # make a directory to put the stuff
     
   message("\n\nStarting download of wibreed_rast.nc\n\n")
   bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/wibreed_rast.nc", 
@@ -154,7 +156,7 @@ if(REGENERATE_POLY_RASTS==TRUE) {
 # these are the weighted average sampling locations for each place
 Pop.Centers.sp <- SpatialPointsDataFrame(Pop.Centers[,c("lon", "lat")], Pop.Centers, coords.nrs=1:2, proj4string=CRS("+proj=longlat"))
 # these are all the actual unique lat longs:
-BreedSampLocations <- SpatialPoints(unique(cbind(WA.B$Long, WA.B$Lat)), proj4string=CRS("+proj=longlat"))
+BreedSampLocations <- SpatialPoints(unique(cbind(WA.B$Longitude, WA.B$Latitude)), proj4string=CRS("+proj=longlat"))
 # these are the weighted average lat longs for the different wintering groups
 WintGroupLocs <- SpatialPointsDataFrame(WW.assign.df[,c("long", "lat")], WW.assign.df,  proj4string=CRS("+proj=longlat"))
 
@@ -202,7 +204,7 @@ wib.na[] <- NA # make another dummy that I can plot with no real result
 # plot nothing three times.  For some inexplicable reason, this resets the plot
 # area.  So thing get plotted in a different place.
 #png(file="try.png", width=4098, height=3047)  # pdf looks terrible.  This looks great and is only 3.7 Mb or so
-jpeg(file="Oct21-6-pops-basemap-way-bigger.jpg", width=floor(4098*2.51), height=floor(3047*2.47), quality=100, res=600)
+jpeg(file="outputs/wiwa-big-color-map.jpg", width=floor(4098*2.51), height=floor(3047*2.47), quality=100, res=600)
 #tiff(file="Oct21-6-pops-basemap.tiff", width=floor(4098*1.02), height=floor(3047*1.05), res=600, compression="none")
 
 plotRGB(na3) # plot the whole thing.

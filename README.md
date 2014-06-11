@@ -99,15 +99,33 @@ Geneland, you will have to replace `intermediates/proba.pop.membership.txt` with
 
 
 ### Making a pretty map with color transparency according to geneland posterior probabilities
-This is done by sourcing the file:
+Note that using the `rgdal` package requires installation of the GDAL libraries from http://www.gdal.org/
+On our mac I did this with:
+```
+brew install gdal
+```
+This has to be done to build the `rgdal` package from source (which is what I had to do
+with R 3.1.0 on a Mac running Mavericks.)
+
+You make the map by sourcing the file:
 ```
 R-main/04_wiwa_popgen_plot_pretty_geneland_map.R
 ```
-into R. By default, this is run with the variables `REGENERATE_BASE_MAP` and `REGENERATE_POLY_RASTS`
+into R. 
+
+By default, this is run with the variables `REGENERATE_BASE_MAP` and `REGENERATE_POLY_RASTS`
 set to `FALSE`, which means that, instead, the R-code downloads 3 files of about 200 Mb worth of stuff to
 avoid some lengthy computations.  The files it downloads are:  `b3_cropped.nc` (a piece of the Natural Earth
 Data base map), `wibreed_rast.nc` (a rasterized version of the breeding range of Wilson's warbler) and `wiwinter_rast.nc`
 (a rasterized version of the wintering range).  The latter two files were generated from data provided by BirdLifeInternational.
+These files were saved in `netcdf` format, so the netcdf libraries need to be installed on your system for these to work.
+As I am re-doing all these analyses in Mavericks to check reproducibility, I find that it looks like, at this point,
+`netcdf` has to be installed and then the appropriate R libraries built from source.  On our mac running Mavericks, I
+did this:
+```
+brew install netcdf
+```
+
 
 If you set `REGENERATE_BASE_MAP` and `REGENERATE_POLY_RASTS` to `TRUE` then you will have 
 you will have to download a suitable map from http://www.naturalearthdata.com/downloads/10m-raster-data/10m-cross-blend-hypso/
