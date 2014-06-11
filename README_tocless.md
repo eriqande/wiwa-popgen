@@ -183,7 +183,7 @@ outputs/wibreed-pipe-pops.txt
 
 #### Standard popgen statistics
 For standard population genetic analyses such as HW tests and tree building, we dropped two loci (AB_AK_03 and AB_PRBO_31) by 
-putting a `#` at the start of their line where they appear in `outputs/wibreed-pipe-pops.txt`.
+putting a `#` at the start of their line where they appear in `outputs/wibreed-pipe-locs.txt`.
 The settings file that we used for `slg_pipe` can be found at:
 ```
 slg_pipe_settings/wiwa-basic-pop-summary-settings.sh
