@@ -12,7 +12,8 @@ stopifnot(
   library(rgdal, logical.return = TRUE),
   library(geosphere, logical.return = TRUE),
   library(RCurl, logical.return = TRUE),
-  library(ncdf4, logical.return = TRUE)
+  library(ncdf4, logical.return = TRUE),
+  library(digest, logical.return = TRUE)
 )
 
 
@@ -98,8 +99,12 @@ if(REGENERATE_BASE_MAP==TRUE) {
 
 
 }  else {
-  dir.create("mapstuff")  # make a directory to put the stuff
+  suppressWarnings(dir.create("mapstuff"))  # make a directory to put the stuff in
   
+  if(file.exists("mapstuff/b3_cropped.nc") && 
+       digest(file = "mapstuff/b3_cropped.nc", algo = "sha1") == "60e36eddd82bfb8ad014b3c2a9a6aedce05cb58e") {
+    message("\nUsing existing file mapstuff/b3_cropped.nc which has proper sha-1 hash")
+  } else {
   message("\n\nStarting download of basemap: b3_cropped.nc\n\n")
   bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/b3_cropped.nc", 
         file = "mapstuff/b3_cropped.nc")
@@ -139,15 +144,25 @@ if(REGENERATE_POLY_RASTS==TRUE) {
 } else {
 	# if not regenerating, then just download them and read them in
   suppressWarnings(dir.create("mapstuff"))  # make a directory to put the stuff
-    
-  message("\n\nStarting download of wibreed_rast.nc\n\n")
-  bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/wibreed_rast.nc", 
+  
+  if(file.exists("mapstuff/wibreed_rast.nc") && 
+       digest(file = "mapstuff/wibreed_rast.nc", algo = "sha1") == "ec32c81a166829e856423871fb39a5411a67f69c") {
+    message("\nUsing existing file mapstuff/wibreed_rast.nc which has proper sha-1 hash")
+  } else {
+    message("\n\nStarting download of wibreed_rast.nc\n\n")
+    bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/wibreed_rast.nc", 
                 file = "mapstuff/wibreed_rast.nc")
+  }
   
-  message("\n\nStarting download of wiwinter_rast.nc\n\n")
-  bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/wiwinter_rast.nc", 
+  
+  if(file.exists("mapstuff/wiwinter_rast.nc") && 
+       digest(file = "mapstuff/wiwinter_rast.nc", algo = "sha1") == "1c909542af5701ec0971ef07b32bf9b2acfc7cb9") {
+    message("\nUsing existing file mapstuff/wiwinter_rast.nc which has proper sha-1 hash")
+  } else {
+    message("\n\nStarting download of wiwinter_rast.nc\n\n")
+    bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/wiwinter_rast.nc", 
         file = "mapstuff/wiwinter_rast.nc")
-  
+  }
 	wibreed.rast <- raster("mapstuff/wibreed_rast.nc")
 	wiwinter.rast <- raster("mapstuff/wiwinter_rast.nc")
 }
