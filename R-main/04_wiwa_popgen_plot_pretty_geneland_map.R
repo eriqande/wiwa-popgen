@@ -251,26 +251,6 @@ text(PC.proj, as.character(PC.proj$Letter), cex=.02)
 text(WGL.proj, as.character(1:nrow(WGL.proj)), cex=.1)
 
 
-# here is some code to make some lines
-if(FALSE) {
-#	AssLatLon.spdf <- spTransform(SpatialPointsDataFrame(AssLatLong[,c("lon", "lat")], AssLatLon, coords.nrs=1:2, proj4string=CRS("+proj=longlat")), wiwa.crs)
-  AssLatLon.spdf <- SpatialPointsDataFrame(AssLatLong[,c("lon", "lat")], AssLatLong, coords.nrs=1:2, proj4string=CRS("+proj=longlat"))
-
-	WM.gr.no.miss <- WM.gr[!is.na(WM.gr$Long), ]
-	AssLatLon.spdf <- AssLatLon.spdf[!is.na(WM.gr$Long), ]  # toss the ones with no origin information, too
-#	WM.gr.spdf <- spTransform(SpatialPointsDataFrame(WM.gr.no.miss[,c("Long", "Lat")], WM.gr.no.miss, coords.nrs=c(7,6), proj4string=CRS("+proj=longlat")), wiwa.crs)
-	WM.gr.spdf <- SpatialPointsDataFrame(WM.gr.no.miss[,c("Long", "Lat")], WM.gr.no.miss, coords.nrs=c(7,6), proj4string=CRS("+proj=longlat")) 
-
-	# here we compute the great circle points (100 for each bird)
-	gCircs <- gcIntermediate(WM.gr.spdf, AssLatLon.spdf, n=100, addStartEnd=T)
-	gCircs.tf <- lapply(gCircs, function(x) spTransform(SpatialPoints(x, proj4string=CRS("+proj=longlat")), wiwa.crs))
-	lapply(gCircs.tf, function(x) lines(x$lat, x$lon, lwd=.1))
-	# this makes it look like the projections are way off...
-}
-
-
-
-
 #plot(coords.proj, add=T, col="white", cex=2.45)  # I have to scale these so they show up!! Not sure how to do that automatically with png
 #plot(coords.proj, add=T, col="red", cex=2.17)
 dev.off()
