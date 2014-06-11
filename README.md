@@ -119,7 +119,7 @@ avoid some lengthy computations.  The files it downloads are:  `b3_cropped.nc` (
 Data base map), `wibreed_rast.nc` (a rasterized version of the breeding range of Wilson's warbler) and `wiwinter_rast.nc`
 (a rasterized version of the wintering range).  The latter two files were generated from data provided by BirdLifeInternational.
 These files were saved in `netcdf` format, so the netcdf libraries need to be installed on your system for these to work.
-As I am re-doing all these analyses in Mavericks to check reproducibility, I find that it looks like, at this point,
+As I am re-doing all these analyses in on a Mac running Mavericks to check reproducibility, I find that it looks like, at this point,
 `netcdf` has to be installed and then the appropriate R libraries built from source.  On our mac running Mavericks, I
 did this:
 ```
@@ -129,10 +129,41 @@ brew install netcdf
 
 If you set `REGENERATE_BASE_MAP` and `REGENERATE_POLY_RASTS` to `TRUE` then you will have 
 you will have to download a suitable map from http://www.naturalearthdata.com/downloads/10m-raster-data/10m-cross-blend-hypso/
-We used the "Cross Blended Hypso with Shaded Relief, Water, and Drainages".  You will also have to get the shapefiles from Wilson's Warblers directly
+We used the "Cross Blended Hypso with Shaded Relief, Water, and Drainages".  You will also have to get the shapefiles for Wilson's Warblers directly
 from BirdLifeInternational (see the **Exceptions to Public Domain** section above). And you will have to put them in the correct location, 
 etc.
 
-The main output from this script is:
+The main output from this script is: `outputs/wiwa-big-color-map.jpg` which is a large jpeg image.  To make the final figure
+for the paper, Kristen imported that into Illustrator and stuck vectorized pies and arrows, etc., in different places.  
 
+Note, running on a Mac with Mavericks it appears there is a problem with fontconfig such that the text (letters and numbers)
+that usually get plotted on the map (in a very tiny font!) do not appear on the map.  They mark the locations of the 
+breeding and wintering samples.  Just look at the paper to see where those should be...
+
+### Session Info
+After running all of this here is what my R sessionInfo() looks like:
+```r
+> sessionInfo()
+R version 3.1.0 (2014-04-10)
+Platform: x86_64-apple-darwin13.1.0 (64-bit)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+ [1] parallel  tcltk     grid      stats     graphics  grDevices utils    
+ [8] datasets  methods   base     
+
+other attached packages:
+ [1] Geneland_4.0.4      fields_7.1          spam_0.41-0        
+ [4] RandomFields_3.0.10 digest_0.6.4        gpiper_0.1         
+ [7] devtools_1.5        mapdata_2.2-3       maps_2.3-7         
+[10] lubridate_1.3.3     plyr_1.8.1          ncdf4_1.10         
+[13] RCurl_1.95-4.1      bitops_1.0-6        geosphere_1.3-8    
+[16] rgdal_0.8-16        raster_2.2-31       sp_1.0-15          
+
+loaded via a namespace (and not attached):
+[1] evaluate_0.5.5  httr_0.3        lattice_0.20-29 memoise_0.2.1  
+[5] Rcpp_0.11.2     stringr_0.6.2   tools_3.1.0     whisker_0.3-2  
+```
 

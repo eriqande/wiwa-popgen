@@ -216,14 +216,11 @@ wib.na <- wibreed.rast
 wib.na[] <- NA # make another dummy that I can plot with no real result
 
 
-# now, we plot na3 (and nothing shows up), the we
-# plot nothing three times.  For some inexplicable reason, this resets the plot
-# area.  So thing get plotted in a different place.
-#png(file="try.png", width=4098, height=3047)  # pdf looks terrible.  This looks great and is only 3.7 Mb or so
+# open a graphics device. we use jpg because it plays well with tranparency,
+# and the files are not too huge
 jpeg(file="outputs/wiwa-big-color-map.jpg", width=floor(4098*2.51), height=floor(3047*2.47), quality=100, res=600)
-#tiff(file="Oct21-6-pops-basemap.tiff", width=floor(4098*1.02), height=floor(3047*1.05), res=600, compression="none")
 
-plotRGB(na3) # plot the whole thing.
+plotRGB(na3) # plot the whole thing, but make it empty (this is a weird hack...)
 for(i in 1:3) {plot(wib.na, add=T, legend=F)} 
 
 # now that we have tricked it into resetting the plot area (is that a bug in raster?) 
