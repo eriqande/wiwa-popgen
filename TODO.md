@@ -7,3 +7,5 @@
 - [ ] Figure out how to cite Natural Earth data and cite them in the paper.
 - [ ] Once I am able to make sure that it is all running again, I should use packrat to make sure the packages are all versioned.
 - [ ] Put the settings file for the WIWA pipeline run into this repository and write about how to get the pipeline to run it.
+- [ ] Permute the colors correctly for the map.
+- [ ] Test for the presence of the big netcdf files.  If they are there, then don't re-download them!
