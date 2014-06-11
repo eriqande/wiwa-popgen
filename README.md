@@ -28,12 +28,12 @@ copyright and related rights in the work worldwide through the CC0 1.0
 Universal public domain dedication.
 
 Note that we include code to download part of a map that was 
-ade with Natural Earth. Free vector and raster map data @ naturalearthdata.com. This
+made with Natural Earth. Free vector and raster map data @ naturalearthdata.com. This
 is all in the public domain. Many thanks to its creators for putting it in the 
 public domain.
 
 ### Exceptions to Public Domain
-This packages includes code that downloads several files derived from differently-licensed materials.  These materials
+This package includes code that downloads several files derived from differently-licensed materials.  These materials
 are not distributed under the public domain license.  Specifically:
 
 *  The files `wibreed_rast.nc` and `wiwinter_rast.nc` are raster files of the range of Wilson's Warblers in the Americas.
@@ -141,7 +141,7 @@ that usually get plotted on the map (in a very tiny font!) do not appear on the 
 breeding and wintering samples.  Just look at the paper to see where those should be...
 
 ### Session Info
-After running all of this here is what my R sessionInfo() looks like:
+After running all of the above in R, here is what my R sessionInfo() looks like:
 ```r
 > sessionInfo()
 R version 3.1.0 (2014-04-10)
@@ -167,3 +167,34 @@ loaded via a namespace (and not attached):
 [5] Rcpp_0.11.2     stringr_0.6.2   tools_3.1.0     whisker_0.3-2  
 ```
 
+### Running structure and basic population genetic statistics
+These analyses were run using the SWFSC MEGA team standard lab genetics pipeline, nicknamed `slg_pipe` and
+available at https://github.com/eriqande/slg_pipe
+
+See that repository for instructions.  As noted above, we used the files generated above as input to `slg_pipe`:
+```
+outputs/wibreed-pipe-genos.txt
+outputs/wibreed-pipe-locs.txt
+outputs/wibreed-pipe-pops.txt
+```
+
+#### Standard popgen statistics
+For standard population genetic analyses such as HW tests and tree building, we dropped two loci (AB_AK_03 and AB_PRBO_31) by 
+putting a `#` at the start of their line where they appear in `outputs/wibreed-pipe-pops.txt`, i.e. those loci
+are now on lines that look like:
+```
+# AB_AK_03
+# AB_PRBO_31
+```
+and the settings file that we used for `slg_pipe` can be found at:
+```
+slg_pipe_settings/wiwa-basic-pop-summary-settings.sh
+```
+in this repository.
+
+#### Structure runs
+To run structure on the data we used the `slg_pipe` input files referenced above and a settings file 
+that can be found in:
+```
+slg_pipe_settings/wiwa-struct-K2to9reps10.txt
+```
