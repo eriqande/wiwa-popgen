@@ -1,21 +1,6 @@
 # wiwa-popgen
 
-- [wiwa-popgen](#wiwa-popgen)
-    - [Intro](#intro)
-    - [TERMS](#terms)
-        - [Exceptions to Public Domain](#exceptions-to-public-domain)
-    - [Reproducing our results](#reproducing-our-results)
-        - [Initial Maneuvers](#initial-maneuvers)
-        - [Geneland analysis](#geneland-analysis)
-        - [Invesigating geneland maximum a posteriori estimates](#invesigating-geneland-maximum-a-posteriori-estimates)
-        - [Making a pretty map with color transparency according to geneland posterior probabilities](#making-a-pretty-map-with-color-transparency-according-to-geneland-posterior-probabilities)
-        - [Session Info](#session-info)
-        - [Running structure and basic population genetic statistics](#running-structure-and-basic-population-genetic-statistics)
-            - [Standard popgen statistics](#standard-popgen-statistics)
-- [AB_AK_03](#abak03)
-- [AB_PRBO_31](#abprbo31)
-            - [Structure runs](#structure-runs)
-    - [How did I get that Table of Contents there?](#how-did-i-get-that-table-of-contents-there)
+@@TOC@@
 
 ## Intro
 This is a collection of R scripts and data for the population
@@ -225,3 +210,4 @@ I do this:
  md-toc-filter README_tocless.md > README.md
 ```
 If I were really cool I would have a commit hook that did that for me.  Ah well.
+
