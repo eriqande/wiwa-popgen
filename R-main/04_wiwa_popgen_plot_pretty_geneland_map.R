@@ -10,7 +10,6 @@ REGENERATE_POLY_RASTS <- FALSE
 stopifnot(
   library(raster, logical.return = TRUE),
   library(rgdal, logical.return = TRUE),
-  library(geosphere, logical.return = TRUE),
   library(RCurl, logical.return = TRUE),
   library(ncdf4, logical.return = TRUE),
   library(digest, logical.return = TRUE)
