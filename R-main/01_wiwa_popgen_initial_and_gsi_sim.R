@@ -297,6 +297,13 @@ AreaByRepuTab <- table(MM$Area_Specific, MM$MaxRepu)
 AreaByRepuTabProportions <- apply(AreaByRepuTab, 1, function(x) x/sum(x))
 #dev.copy2pdf(file="outputs/area-specific-naked-arrows.pdf")
 
+# and now we can write that out to a table
+AllMigrantsToRep <- AreaByRepuTab
+class(AllMigrantsToRep) <- "matrix"
+write.table(AllMigrantsToRep, file = "outputs/migrants-assignment-table-to-repunit.txt", sep="\t", quote=F)
+
+
+
 
 # now, we want to put the Cibola birds in there in separate years (2008 and 2009)
 # but all the other ones we just lump all the different years
