@@ -170,12 +170,16 @@ plot(WM.gr$MaxRepu, WM.gr$PostMax, las=2)
 dev.off()
 
 
-#### SPLIT RESULTS INTO WW (WINTERING BIRDS) AND MM (MIGRATING BIRDS) #####
+#### SPLIT RESULTS INTO WW (WINTERING BIRDS) AND MM (MIGRATING BIRDS) and write out to files for later #####
 # OK, this is cool. Now we want to break these into wintering and migrating:
 # The migrants either are from Pop=="WIWA" or have Pop starting with "m"
 migrant.idx <- WM.gr$Pop=="WIWA" | grepl("^m", WM.gr$Pop)
 WW <- WM.gr[ !migrant.idx, ]  ## WW =  Wintering Wintering!!
 MM <- WM.gr[  migrant.idx, ]  ## MM = Migrating Migrating !!
+
+write.csv(MM, file="outputs/assignment-results-migrants.csv")
+write.csv(WW, file="outputs/assignment-results-wintering.csv")
+
 
 #### ANALYZE THE WINTERING BIRDS GSI RESULTS (WW) ####
 # here are some fixes that I have to make.  Perhaps Kristen can update the data base.
