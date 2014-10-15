@@ -5,7 +5,17 @@
 ## Intro
 This is a collection of R scripts and data for the population
 genetics analysis of 96 SNPs typed on numerous Wilson's
-Warblers.  
+Warblers. 
+
+This repository of data and source code accompanies the paper:
+'Mapping migration in a songbird using high-resolution genetic markers' by
+Kristen Ruegg, Eric C. Anderson, Kristina L. Paxton, Vanessa Apkenas, Sirena Lao,
+Rodney B. Siegel, David F. DeSante, Frank Moore and Thomas B. Smith. to appear
+in _Molecular Ecology_
+
+If you downloaded this from Dryad,  Cool.  In that case, if you want to see
+the entire revision history, you can find this as a GitHub 
+repository at https://github.com/eriqande/wiwa-popgen
 
 We call it *popgen* as distinct from the bioinformatics phase
 of the project in which we sifted through a lot of 
