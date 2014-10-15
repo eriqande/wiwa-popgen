@@ -105,7 +105,7 @@ if(REGENERATE_BASE_MAP==TRUE) {
     message("\nUsing existing file mapstuff/b3_cropped.nc which has proper sha-1 hash")
   } else {
   message("\n\nStarting download of basemap: b3_cropped.nc\n\n")
-  bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/b3_cropped.nc", 
+  bdown(url = "https://datadryad.org/mn/object/http://dx.doi.org/10.5061/dryad.j5d33/1/bitstream", 
         file = "mapstuff/b3_cropped.nc")
   }
 
@@ -150,7 +150,7 @@ if(REGENERATE_POLY_RASTS==TRUE) {
     message("\nUsing existing file mapstuff/wibreed_rast.nc which has proper sha-1 hash")
   } else {
     message("\n\nStarting download of wibreed_rast.nc\n\n")
-    bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/wibreed_rast.nc", 
+    bdown(url = "https://datadryad.org/mn/object/http://dx.doi.org/10.5061/dryad.j5d33/2/bitstream", 
                 file = "mapstuff/wibreed_rast.nc")
   }
   
@@ -160,7 +160,7 @@ if(REGENERATE_POLY_RASTS==TRUE) {
     message("\nUsing existing file mapstuff/wiwinter_rast.nc which has proper sha-1 hash")
   } else {
     message("\n\nStarting download of wiwinter_rast.nc\n\n")
-    bdown(url = "https://dl.dropboxusercontent.com/u/19274778/mapstuff/wiwinter_rast.nc", 
+    bdown(url = "https://datadryad.org/mn/object/http://dx.doi.org/10.5061/dryad.j5d33/3/bitstream", 
         file = "mapstuff/wiwinter_rast.nc")
   }
   
