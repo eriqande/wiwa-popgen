@@ -62,8 +62,8 @@ public domain.
 This package includes code that downloads several files derived from differently-licensed materials.  These materials
 are not distributed under the public domain license.  Specifically:
 
-*  The files `wibreed_rast.nc` and `wiwinter_rast.nc` are raster files of the range of Wilson's Warblers in the Americas.
-They were generated from shapefiles provided to us by BirdLife International.   (BirdLife International and NatureServe (2012) *Bird species distribution maps of the world*. BirdLife International, Cambridge, UK and NatureServe, Arlington, USA.)  The raster files are provided through download from an external link only for reproduction of the results of the paper we have published on this topic and should not be used for other purposes.  Persons interested in the range map should contact BirdLife International or NatureServe directly.  The full text of the license under which the original shapefiles and meta data were provided to us appears in TERMS-BLI.md.
+*  The files `wibreed_rast.nc` and `wiwinter_rast.nc` are raster files of the range of Wilson's Warblers in the Americas. They were generated from shapefiles provided to us by BirdLife International. (BirdLife International and NatureServe (2012) Bird species distribution maps of the world. BirdLife International, Cambridge, UK and NatureServe, Arlington, USA). Persons interested in the range map should contact BirdLife International <http://www.birdlife.org/> or NatureServe <http://www.natureserve.org/> directly"  The full text of the license under which the original shapefiles and meta data were provided to us appears in TERMS-BLI.md.  And in subsequent
+conversations with them (via Dryad) they approved posting of the raster files on Dryad.
 
 ## Reproducing our results
 
