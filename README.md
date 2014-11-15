@@ -46,7 +46,7 @@ still reproduces all of our results.
 ## TERMS
 
 As a work, at least in part, of the United States Government, the contents
-of this repository, except where specifically excepted, is in the
+of this repository is in the
 public domain within the United States. The co-authors of this package
 who are not Federal employees also place their contributions into the
 public domain. Additionally, we waive
@@ -58,12 +58,10 @@ made with Natural Earth. Free vector and raster map data @ naturalearthdata.com.
 is all in the public domain. Many thanks to its creators for putting it in the 
 public domain.
 
-### Exceptions to Public Domain
-This package includes code that downloads several files derived from differently-licensed materials.  These materials
-are not distributed under the public domain license.  Specifically:
-
-*  The files `wibreed_rast.nc` and `wiwinter_rast.nc` are raster files of the range of Wilson's Warblers in the Americas. They were generated from shapefiles provided to us by BirdLife International. (BirdLife International and NatureServe (2012) Bird species distribution maps of the world. BirdLife International, Cambridge, UK and NatureServe, Arlington, USA). Persons interested in the range map should contact BirdLife International <http://www.birdlife.org/> or NatureServe <http://www.natureserve.org/> directly"  The full text of the license under which the original shapefiles and meta data were provided to us appears in TERMS-BLI.md.  And in subsequent
-conversations with them (via Dryad) they approved posting of the raster files on Dryad.
+This package includes code that downloads several files originally derived from differently-licensed materials; however the derived products are provided here, with permission,
+under the CC0 1.0.   Specifically, the files `wibreed_rast.nc` and `wiwinter_rast.nc` are raster files of the range of Wilson's Warblers in the Americas. They were generated from shapefiles provided to us by BirdLife International. (BirdLife International and NatureServe (2012) Bird species distribution maps of the world. BirdLife International, Cambridge, UK and NatureServe, Arlington, USA). Persons interested in the range map should contact BirdLife International <http://www.birdlife.org/> or NatureServe <http://www.natureserve.org/> directly.  The full text of the license under which the original shapefiles and meta data were provided to us appears in TERMS-BLI.md.  However, following discussions with
+Dryad, they kindly allow the raster
+files we created from their shapefiles to be archived under the CC0 1.0 on Dryad. 
 
 ## Reproducing our results
 
