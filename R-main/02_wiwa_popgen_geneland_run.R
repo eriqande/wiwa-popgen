@@ -15,11 +15,23 @@ if(!all(c("gl.geno", "gl.coord") %in% got.these)) {
 }
 
 
+#### Get the isotope data   ####
+# get all the isotope data (wintering and breeding)
+isotopes_all <- read.table("data/wiwa-isotopes.txt", header = T, row.names = 1)
+
+# pick out values just for the breeders in gl.geno
+isotopes <- cbind(isotopes_all[rownames(gl.geno), ])
+rownames(isotopes) <- rownames(gl.geno)
+
+
+
+
+
 #### DEFINE A FUNCTION TO DO THE GENELAND RUNS ####
 # this function creates the directory subdir-suffix, changes to and
 # then runs geneland there.  This is a wrapper to let you run it
 # using multicore.  You have to define 
-runGeneLand <- function(subdir="GL-run", suffix="0", geno, coord) {
+runGeneLand <- function(subdir="GL-run", suffix="0", geno, coord, iso) {
 	
 	curd <- getwd()
 	dn <- paste(subdir, suffix, sep="-")
@@ -30,6 +42,7 @@ runGeneLand <- function(subdir="GL-run", suffix="0", geno, coord) {
 	# these appear to be largely the values in kristen parameter file
 	MCMC(coordinates=coord, 
 		geno.dip.codom=geno,
+    qtc = iso,
 		varnpop=TRUE, 
 		npopmax=10, 
 		spatial=TRUE, 
