@@ -68,13 +68,16 @@ runGeneLand <- function(subdir="GL-run", suffix="0", geno, coord, iso) {
 }
 
 
+
+
 #### DO THE GENELAND RUNS  ####
 # and here we spawn ourselves 10 processes running geneland
 mclapply(1:10, function(x) runGeneLand(
 		subdir="./outputs/GeneLandRun", 
 		suffix=x, 
 		geno=gl.geno,
-		coord=gl.coord),
+		coord=gl.coord,
+    iso = isotopes),
 	mc.cores = 10
 )
 
