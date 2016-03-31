@@ -4,6 +4,7 @@
 # shapefiles for the bird ranges.) 
 REGENERATE_BASE_MAP <- FALSE
 REGENERATE_POLY_RASTS <- FALSE
+MAKE_POLYGONS <- FALSE
 
 
 #### LOAD LIBRARIES, DEFINE SMALL HELPER FUNCTIONS, GET DATA, SOURCE NECESSARY FILES  ####
@@ -12,7 +13,8 @@ stopifnot(
   library(rgdal, logical.return = TRUE),
   library(RCurl, logical.return = TRUE),
   library(ncdf4, logical.return = TRUE),
-  library(digest, logical.return = TRUE)
+  library(digest, logical.return = TRUE),
+  library(rgeos, logical.return = TRUE)
 )
 
 
@@ -208,6 +210,26 @@ WGL.proj <- spTransform(WintGroupLocs, wiwa.crs)
 	# and then mask it according to the breeding habitat
 	ppb3 <- mask(ppb2, wibreed.rast)
 
+	
+# Convert those geneland-inferred regions to polygons
+# and shapefiles for future use, if desired
+if(MAKE_POLYGONS == TRUE) {
+  # now, put a 1 in the layer that has the highest posterior prob and NA's elsewhere
+  ppb_ones <- calc(ppb3, fun = function(x) {y<-rep(NA, length(x)); y[which.max(x)] <- 1; y })
+  names(ppb_ones) <- c("CalSierra", "Basin.Rockies", "Eastern",  "AK.EastBC.AB",  "Wa.To.NorCalCoast",  "CentCalCoast")
+  
+
+  gl_polys <- lapply(names(ppb_ones), function(x) rasterToPolygons(ppb_ones[[x]], dissolve = TRUE))
+  names(gl_polys) <- names(ppb_ones)
+  
+  # make some fun little PDF plots of them:
+  lapply(names(gl_polys), function(x) {pdf(file = paste("outputs/", x, ".pdf", sep = "")); plot(gl_polys[[x]], main = x); dev.off()})
+  
+  # now write each out as an ESRI shapefile:
+  lapply(names(gl_polys), function(x) {
+         writeOGR(obj=gl_polys[[x]], dsn="outputs/wiwa_geneland_shapefiles", layer=x, driver="ESRI Shapefile")
+  })
+}
 
 # here are some crazy hacks I have to do to get the plots to come out
 na3 <- b3
